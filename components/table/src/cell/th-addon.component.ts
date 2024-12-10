@@ -145,7 +145,14 @@ export class NzThAddOnComponent<T> implements OnChanges, OnInit {
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
     private destroy$: NzDestroyService
-  ) {}
+  ) {
+    this.nzConfigService
+      .getConfigChangeEventForComponent(NZ_CONFIG_MODULE_NAME)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.cdr.markForCheck();
+      });
+  }
 
   ngOnInit(): void {
     fromEventOutsideAngular(this.host.nativeElement, 'click')
